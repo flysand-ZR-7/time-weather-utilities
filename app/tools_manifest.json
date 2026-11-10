@@ -1,0 +1,278 @@
+{
+  "tools": [
+    {
+      "name": "get_live_time",
+      "description": "Get current live wall-clock time, UTC offset, DST status, day of week, and timezone details for any city or IANA timezone.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "timezone": {
+            "type": "string",
+            "description": "City name (e.g. 'Tokyo', 'London', 'New York') or IANA timezone identifier (e.g. 'Asia/Tokyo', 'America/New_York')."
+          },
+          "at": {
+            "type": "string",
+            "description": "Optional ISO 8601 datetime string to evaluate instead of current time."
+          },
+          "date_format": {
+            "type": "string",
+            "description": "Optional strftime format string (e.g. '%Y-%m-%d %H:%M:%S')."
+          }
+        },
+        "required": ["timezone"]
+      }
+    },
+    {
+      "name": "get_world_clock",
+      "description": "Check and compare current local times across 1 to 10 cities or timezones simultaneously, sorted by UTC offset.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "locations": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of 1 to 10 city or timezone names (e.g. ['London', 'Tokyo', 'San Francisco'])."
+          },
+          "date_format": {
+            "type": "string",
+            "description": "Optional strftime format string."
+          }
+        },
+        "required": ["locations"]
+      }
+    },
+    {
+      "name": "convert_timezone",
+      "description": "Convert a specific wall-clock date and time from one timezone to another, with warnings for DST autumn fold ambiguities and spring-forward gaps.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "datetime_str": {
+            "type": "string",
+            "description": "Source date and time in ISO format (e.g. '2026-03-08T02:30:00')."
+          },
+          "from_zone": {
+            "type": "string",
+            "description": "Originating city or timezone (e.g. 'America/New_York')."
+          },
+          "to_zone": {
+            "type": "string",
+            "description": "Target city or timezone (e.g. 'Europe/London')."
+          }
+        },
+        "required": ["datetime_str", "from_zone", "to_zone"]
+      }
+    },
+    {
+      "name": "calculate_date",
+      "description": "Perform calendar calculations: difference between dates, adding/subtracting calendar or business days, finding weekdays, ISO week numbers, and countdown days.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": ["difference", "add", "subtract", "weekday", "week_number", "days_until"],
+            "description": "The date calculation operation."
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Primary date in YYYY-MM-DD format."
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Secondary date in YYYY-MM-DD format (required for 'difference', target for 'days_until')."
+          },
+          "days": { "type": "integer", "description": "Calendar days to add/subtract." },
+          "weeks": { "type": "integer", "description": "Weeks to add/subtract." },
+          "months": { "type": "integer", "description": "Months to add/subtract (with month-end roll handling)." },
+          "years": { "type": "integer", "description": "Years to add/subtract." },
+          "business_days": { "type": "integer", "description": "Business days (skipping Sat & Sun) to add/subtract." }
+        },
+        "required": ["operation", "start_date"]
+      }
+    },
+    {
+      "name": "get_current_weather",
+      "description": "Retrieve live current weather for any location or latitude/longitude coordinates, including temperature, feels-like, wind direction, humidity, and WMO weather descriptions.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "City name (e.g. 'Paris', 'Berlin') or coordinates ('51.5074, -0.1278')."
+          },
+          "temperature_unit": {
+            "type": "string",
+            "enum": ["celsius", "fahrenheit"],
+            "default": "celsius"
+          },
+          "wind_speed_unit": {
+            "type": "string",
+            "enum": ["kmh", "ms", "mph", "kn"],
+            "default": "kmh"
+          },
+          "precipitation_unit": {
+            "type": "string",
+            "enum": ["mm", "inch"],
+            "default": "mm"
+          }
+        },
+        "required": ["location"]
+      }
+    },
+    {
+      "name": "get_weather_forecast",
+      "description": "Retrieve 1 to 16-day weather forecasts with daily highs/lows, rain probabilities, optional hourly data, sun/moon phases, and narrative overview.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "City name or coordinates."
+          },
+          "forecast_days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16,
+            "default": 7,
+            "description": "Number of days (1-16)."
+          },
+          "forecast_hours": {
+            "type": "integer",
+            "description": "Optional hours for hourly breakdown (e.g. 24 or 48)."
+          },
+          "include_hourly": {
+            "type": "boolean",
+            "default": false
+          },
+          "include_astronomy": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include sunrise, sunset, daylight hours, and moon phase."
+          },
+          "temperature_unit": {
+            "type": "string",
+            "enum": ["celsius", "fahrenheit"],
+            "default": "celsius"
+          }
+        },
+        "required": ["location"]
+      }
+    },
+    {
+      "name": "get_air_quality",
+      "description": "Inspect air quality index (AQI), PM2.5, PM10, Ozone, UV index, and health guidance for any place.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "City name or coordinates."
+          }
+        },
+        "required": ["location"]
+      }
+    },
+    {
+      "name": "get_weather_advice",
+      "description": "Get actionable recommendations: whether an umbrella or sunscreen is needed, jacket warmth level, wind cautions, and outdoor comfort score (0-10).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "City name or coordinates."
+          }
+        },
+        "required": ["location"]
+      }
+    },
+    {
+      "name": "evaluate_calculator",
+      "description": "Safely evaluate mathematical expressions (arithmetic, powers, trigonometry, square roots, logarithms, factorials) using an AST-based sandbox without eval/exec.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "expression": {
+            "type": "string",
+            "description": "Mathematical expression (e.g. '2^10 + sqrt(144) * sin(pi/2)')."
+          }
+        },
+        "required": ["expression"]
+      }
+    },
+    {
+      "name": "calculate_finance",
+      "description": "Perform commercial math: discounts, sales tax, tip split, simple interest, compound interest, and loan EMI.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": ["percentage", "discount", "tax", "tip_split", "simple_interest", "compound_interest", "emi"],
+            "description": "Financial operation to perform."
+          },
+          "amount": { "type": "number", "description": "Base monetary amount." },
+          "percent": { "type": "number", "description": "Percentage value." },
+          "original_price": { "type": "number", "description": "Price before discount." },
+          "discount_percent": { "type": "number", "description": "Discount percentage." },
+          "tax_percent": { "type": "number", "description": "Tax percentage." },
+          "tax_included": { "type": "boolean", "default": false },
+          "bill_amount": { "type": "number", "description": "Pre-tip restaurant bill." },
+          "tip_percent": { "type": "number", "description": "Tip percentage." },
+          "num_people": { "type": "integer", "description": "Number of diners splitting." },
+          "principal": { "type": "number", "description": "Loan or deposit principal." },
+          "rate_annual_percent": { "type": "number", "description": "Annual interest rate %." },
+          "time_years": { "type": "number", "description": "Duration in years." },
+          "compounding_frequency": { "type": "integer", "default": 12 },
+          "tenure_months": { "type": "integer", "description": "Loan repayment months." }
+        },
+        "required": ["operation"]
+      }
+    },
+    {
+      "name": "convert_units",
+      "description": "Convert physical measurement units across dimensions (temperature with offsets, digital bytes MB vs MiB, speed, length, weight, volume, pressure).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "number", "description": "Numeric magnitude to convert." },
+          "from_unit": { "type": "string", "description": "Source unit (e.g. 'celsius', 'mph', 'miles', 'lbs', 'GB')." },
+          "to_unit": { "type": "string", "description": "Target unit (e.g. 'fahrenheit', 'km/h', 'km', 'kg', 'MiB')." }
+        },
+        "required": ["value", "from_unit", "to_unit"]
+      }
+    },
+    {
+      "name": "convert_currency",
+      "description": "Convert money between currencies using European Central Bank reference rates for today or a historical date.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "amount": { "type": "number", "default": 1.0, "description": "Amount to convert." },
+          "from_currency": { "type": "string", "default": "USD", "description": "Source 3-letter currency code (e.g. 'USD')." },
+          "to_currencies": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "1 to 10 target currency codes (e.g. ['EUR', 'GBP', 'JPY'])."
+          },
+          "date": { "type": "string", "description": "Optional historical date in YYYY-MM-DD format." }
+        },
+        "required": ["from_currency", "to_currencies"]
+      }
+    },
+    {
+      "name": "get_currency_trend",
+      "description": "Analyze historical exchange rate trends, min/max/average rates, and trend direction for a currency pair over 7 or 30 days.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "from_currency": { "type": "string", "description": "Base currency code (e.g. 'USD')." },
+          "to_currency": { "type": "string", "description": "Target currency code (e.g. 'EUR')." },
+          "days": { "type": "integer", "enum": [7, 30], "default": 30, "description": "Time window in days." }
+        },
+        "required": ["from_currency", "to_currency"]
+      }
+    }
+  ]
+}
