@@ -1,6 +1,7 @@
 """Pytest test configuration, fixtures, and application test clients."""
 
 import pytest
+import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from app.cache import (
     air_quality_cache,
@@ -30,7 +31,7 @@ def reset_caches_and_limits():
     yield
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def client():
     """Async test client bound to FastAPI application with lifespan management."""
     await init_http_client()
