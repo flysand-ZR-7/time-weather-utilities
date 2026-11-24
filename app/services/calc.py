@@ -3,7 +3,7 @@
 import ast
 import math
 import operator
-from typing import Any, Callable, Dict, Union
+from typing import Any, Callable, Dict, Optional, Union
 
 # Whitelist allowed constants
 MATH_CONSTANTS: Dict[str, float] = {
