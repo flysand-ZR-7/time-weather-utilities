@@ -33,11 +33,5 @@ jobs:
       run: |
         python -m pytest tests/ -v > pytest_output.log 2>&1 || true
         cat pytest_output.log
+        head -n 25 pytest_output.log | while IFS= read -r line; do echo "::error title=Pytest Log::$line"; done
         python -c "import sys; sys.exit(0 if '52 passed' in open('pytest_output.log').read() else 1)"
-
-    - name: Upload test log
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-log-${{ matrix.python-version }}
-        path: pytest_output.log
